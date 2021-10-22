@@ -10,6 +10,9 @@ contract YourContract {
 
   string public purpose = "A Mew Hope.";
 
+  uint immutable public oneWei = 1 wei;
+  uint immutable oneEther = 1 ether;
+
   constructor() {
     // what should we do on deploy?
   }
@@ -18,6 +21,7 @@ contract YourContract {
       purpose = "New World Order (ignoring proposed purpose)";
       console.log(msg.sender,"set purpose to",purpose);
       console.log("to think the user wanted", newPurpose);
+      console.log(oneEther / oneWei / 1e17);
       //emit SetPurpose(msg.sender, purpose);
   }
 }
