@@ -8,16 +8,22 @@ contract YourContract {
 
   //event SetPurpose(address sender, string purpose);
 
-  string public purpose = "A Mew Hope.";
+  mapping(string => string) public myMap;
+  mapping(address => mapping(uint => bool)) public nested;
 
   constructor() {
     // what should we do on deploy?
   }
 
   function setPurpose(string memory newPurpose) public {
-      purpose = "New World Order (ignoring proposed purpose)";
-      console.log(msg.sender,"set purpose to",purpose);
+      console.log("My Map Before", myMap['purpose']);
+      myMap['purpose'] = newPurpose;
+      console.log("Nested Map Value", nested[msg.sender][0]);
+      nested[msg.sender][0] = true;
       console.log("to think the user wanted", newPurpose);
+      console.log("My Map Now", myMap['purpose']);
+      console.log("Nested Map Value", nested[msg.sender][0]);      
+      //console.log("Nested Map Now", nested);
       //emit SetPurpose(msg.sender, purpose);
   }
 }
