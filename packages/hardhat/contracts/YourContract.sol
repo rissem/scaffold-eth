@@ -8,15 +8,16 @@ contract YourContract {
 
   //event SetPurpose(address sender, string purpose);
 
-  string public purpose = "Building Unstoppable Apps!!!";
+  string public purpose = "A Mew Hope.";
 
   constructor() {
     // what should we do on deploy?
   }
 
   function setPurpose(string memory newPurpose) public {
-      purpose = newPurpose;
+      purpose = "New World Order (ignoring proposed purpose)";
       console.log(msg.sender,"set purpose to",purpose);
+      console.log("to think the user wanted", newPurpose);
       //emit SetPurpose(msg.sender, purpose);
   }
 }
