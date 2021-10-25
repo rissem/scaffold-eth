@@ -1,26 +1,29 @@
-const { ethers } = require("hardhat");
-const { use, expect } = require("chai");
-const { solidity } = require("ethereum-waffle");
+const { ethers } = require('hardhat')
+const { use, expect } = require('chai')
+const { solidity } = require('ethereum-waffle')
 
-use(solidity);
+use(solidity)
 
-describe("My Dapp", function () {
-  let myContract;
+describe('My Dapp', function () {
+  let myContract
 
-  describe("YourContract", function () {
-    it("Should deploy YourContract", async function () {
-      const YourContract = await ethers.getContractFactory("YourContract");
+  describe('YourContract', function () {
+    it('Should deploy YourContract', async function () {
+      const { deployer } = await getNamedAccounts()
+      const accounts = await getUnnamedAccounts()
+      const provider = ethers.getDefaultProvider()
+      // console.log('BALANCE', await provider.getBalance(deployer))
+      // console.log('BALANCE', await provider.getBalance(accounts[0]))
 
-      myContract = await YourContract.deploy();
-    });
-
-    describe("setPurpose()", function () {
-      it("Should be able to set a new purpose", async function () {
-        const newPurpose = "Test Purpose";
-
-        await myContract.setPurpose(newPurpose);
-        expect(await myContract.purpose()).to.equal(newPurpose);
-      });
-    });
-  });
-});
+      const YourContract = await ethers.getContractFactory('YourCollectible')
+      myContract = await YourContract.deploy()
+      console.log('CONTRACT OWNER', await myContract.owner())
+      console.log('DEPLOYER', deployer)
+      //gas limit is somwhere between 200,000 and 300,000
+      const id = (
+        await myContract.mintItem(accounts[0], 'blah', { gasLimit: 300000 })
+      ).data
+      console.log('MINTED NFT ID = ', id)
+    })
+  })
+})
