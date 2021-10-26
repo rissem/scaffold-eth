@@ -1,7 +1,7 @@
 pragma solidity >=0.6.0 <0.7.0;
 //SPDX-License-Identifier: MIT
 
-//import "hardhat/console.sol";
+import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -19,10 +19,13 @@ contract YourCollectible is ERC721, Ownable {
   }
 
   function mintItem(address to, string memory tokenURI)
+      payable
       public
       onlyOwner
       returns (uint256)
   {
+      require(msg.value > 1e9 * 1e6, "Minimum 1M Gwei required to mint.");
+
       _tokenIds.increment();
 
       uint256 id = _tokenIds.current();
@@ -30,5 +33,16 @@ contract YourCollectible is ERC721, Ownable {
       _setTokenURI(id, tokenURI);
 
       return id;
+  }
+
+  function liquidate() 
+    public
+    returns (address)
+  {
+    uint256 value = address(this).balance;
+    console.log("liquidating...");
+    (bool success, ) = msg.sender.call{value: value}("");
+    require(success);
+    return msg.sender;    
   }
 }

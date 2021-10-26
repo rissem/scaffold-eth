@@ -2,7 +2,7 @@
 const fs = require('fs')
 const chalk = require('chalk')
 const { config, ethers } = require('hardhat')
-const { utils } = require('ethers')
+const { utils, BigNumber } = require('ethers')
 const R = require('ramda')
 const ipfsAPI = require('ipfs-http-client')
 const ipfs = ipfsAPI({
@@ -15,7 +15,7 @@ const delayMS = 1000 //sometimes xDAI needs a 6000ms break lol 😅
 
 const main = async () => {
   // ADDRESS TO MINT TO:
-  const toAddress = '0x34aA3F359A9D614239015126635CE7732c18fDF3'
+  const toAddress = '0xe6f441a747c9BEA4F51d87162799A3Bcd617f140'
 
   console.log('\n\n 🎫 Minting to ' + toAddress + '...\n')
 
@@ -46,7 +46,10 @@ const main = async () => {
   const uploaded = await ipfs.add(JSON.stringify(buffalo))
 
   console.log('Minting buffalo with IPFS hash (' + uploaded.path + ')')
-  await yourCollectible.mintItem(toAddress, uploaded.path, { gasLimit: 400000 })
+  await yourCollectible.mintItem(toAddress, uploaded.path, {
+    gasLimit: 400000,
+    value: BigNumber.from('10000000000000000'),
+  })
 
   await sleep(delayMS)
 
@@ -76,6 +79,7 @@ const main = async () => {
   console.log('Minting zebra with IPFS hash (' + uploadedzebra.path + ')')
   await yourCollectible.mintItem(toAddress, uploadedzebra.path, {
     gasLimit: 400000,
+    value: BigNumber.from('10000000000000000'),
   })
 
   await sleep(delayMS)
@@ -106,6 +110,7 @@ const main = async () => {
   console.log('Minting rhino with IPFS hash (' + uploadedrhino.path + ')')
   await yourCollectible.mintItem(toAddress, uploadedrhino.path, {
     gasLimit: 400000,
+    value: BigNumber.from('10000000000000000'),
   })
 
   await sleep(delayMS)
@@ -136,6 +141,7 @@ const main = async () => {
   console.log('Minting fish with IPFS hash (' + uploadedfish.path + ')')
   await yourCollectible.mintItem(toAddress, uploadedfish.path, {
     gasLimit: 400000,
+    value: BigNumber.from('10000000000000000'),
   })
 
   await sleep(delayMS)
@@ -166,6 +172,7 @@ const main = async () => {
   console.log('Minting flamingo with IPFS hash (' + uploadedflamingo.path + ')')
   await yourCollectible.mintItem(toAddress, uploadedflamingo.path, {
     gasLimit: 400000,
+    value: BigNumber.from('10000000000000000'),
   })
 
   const godzilla = {
@@ -194,6 +201,7 @@ const main = async () => {
   console.log('Minting godzilla with IPFS hash (' + uploadedgodzilla.path + ')')
   await yourCollectible.mintItem(toAddress, uploadedgodzilla.path, {
     gasLimit: 400000,
+    value: BigNumber.from('10000000000000000'),
   })
 
   await sleep(delayMS)
