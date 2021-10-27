@@ -25,14 +25,14 @@ contract Staker {
   }
 
   function stake() public payable {
-    require(block.timestamp < deadline);
+    require(block.timestamp < deadline, "Too late to stake");
     contributions[msg.sender] = msg.value;
     totalRaised += msg.value;
     emit Stake(msg.sender, msg.value);
   }
 
   function execute() public {
-    require(block.timestamp > deadline);
+    require(block.timestamp > deadline, "Unable to execute yet...");
     if (totalRaised > threshold){
       exampleExternalContract.complete{value: address(this).balance}();
     } else {
@@ -40,12 +40,17 @@ contract Staker {
     }
   }
 
+  // allow a user to retrieve their balance
+  function balance() public view returns (uint) {
+    return contributions[msg.sender];
+  }
+
   function withdraw() public {
-    require (openForWithdrawal);
+    require (openForWithdrawal, "Contract is not open for withdrawal");
     //TODO    
   }
 
-  function timeLeft() public returns (uint){
+  function timeLeft() public view returns (uint){
     return deadline - block.timestamp;
   }
 }
