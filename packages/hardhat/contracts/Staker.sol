@@ -4,27 +4,48 @@ import "hardhat/console.sol";
 import "./ExampleExternalContract.sol"; //https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
 
 contract Staker {
+  event Stake(
+    address from,
+    uint value
+  );
 
   ExampleExternalContract public exampleExternalContract;
 
-  constructor(address exampleExternalContractAddress) public {
+  bool public openForWithdrawal = false;
+  uint public deadline;
+  uint public totalRaised = 0;
+  uint public threshold;
+
+  mapping(address => uint) contributions;
+
+  constructor(address exampleExternalContractAddress, uint stakingDuration, uint _threshold) public {
+    deadline = block.timestamp + stakingDuration;
     exampleExternalContract = ExampleExternalContract(exampleExternalContractAddress);
+    threshold = _threshold;  
   }
 
-  // Collect funds in a payable `stake()` function and track individual `balances` with a mapping:
-  //  ( make sure to add a `Stake(address,uint256)` event and emit it for the frontend <List/> display )
+  function stake() public payable {
+    require(block.timestamp < deadline);
+    contributions[msg.sender] = msg.value;
+    totalRaised += msg.value;
+    emit Stake(msg.sender, msg.value);
+  }
 
+  function execute() public {
+    require(block.timestamp > deadline);
+    if (totalRaised > threshold){
+      exampleExternalContract.complete{value: address(this).balance}();
+    } else {
+      openForWithdrawal = true;
+    }
+  }
 
-  // After some `deadline` allow anyone to call an `execute()` function
-  //  It should either call `exampleExternalContract.complete{value: address(this).balance}()` to send all the value
+  function withdraw() public {
+    require (openForWithdrawal);
+    //TODO    
+  }
 
-
-
-  // if the `threshold` was not met, allow everyone to call a `withdraw()` function
-
-
-
-  // Add a `timeLeft()` view function that returns the time left before the deadline for the frontend
-
-
+  function timeLeft() public returns (uint){
+    return deadline - block.timestamp;
+  }
 }
