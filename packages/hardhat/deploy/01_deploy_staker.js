@@ -6,7 +6,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   )
   await deploy('Staker', {
     from: deployer,
-    args: [exampleExternalContract.address, 4000, 10000],
+    args: [exampleExternalContract.address, 4000, 1e15],
     log: true,
   })
 }

@@ -16,7 +16,7 @@ contract Staker {
   uint public totalRaised = 0;
   uint public threshold;
 
-  mapping(address => uint) contributions;
+  mapping(address => uint) public balances;
 
   constructor(address exampleExternalContractAddress, uint stakingDuration, uint _threshold) public {
     deadline = block.timestamp + stakingDuration;
@@ -26,7 +26,7 @@ contract Staker {
 
   function stake() public payable {
     require(block.timestamp < deadline, "Too late to stake");
-    contributions[msg.sender] = msg.value;
+    balances[msg.sender] = msg.value;
     totalRaised += msg.value;
     emit Stake(msg.sender, msg.value);
   }
@@ -42,7 +42,7 @@ contract Staker {
 
   // allow a user to retrieve their balance
   function balance() public view returns (uint) {
-    return contributions[msg.sender];
+    return balances[msg.sender];
   }
 
   function withdraw() public {
