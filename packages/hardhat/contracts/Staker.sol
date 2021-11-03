@@ -13,6 +13,7 @@ contract Staker {
 
   bool public openForWithdrawal = false;
   uint public deadline;
+  uint public completed_at= 0;
   uint public totalRaised = 0;
   uint public threshold;
 
@@ -33,6 +34,9 @@ contract Staker {
 
   function execute() public {
     require(block.timestamp > deadline, "Unable to execute yet...");
+    // prevent this from being called multiple times
+    require(completed_at == 0, "Already executed");
+    completed_at = block.timestamp;
     if (totalRaised > threshold){
       exampleExternalContract.complete{value: address(this).balance}();
     } else {
