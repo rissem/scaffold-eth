@@ -47,7 +47,9 @@ contract Staker {
 
   function withdraw() public {
     require (openForWithdrawal, "Contract is not open for withdrawal");
-    //TODO    
+    uint amount = balances[msg.sender];
+    balances[msg.sender] = 0;
+    msg.sender.transfer(amount);
   }
 
   function timeLeft() public view returns (uint){

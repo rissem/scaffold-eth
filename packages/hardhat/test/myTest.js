@@ -108,5 +108,48 @@ describe('Staking App', async function () {
     })
   })
 
-  describe('Unsuccessful Staker', async function () {})
+  describe('Unsuccessful Staker', async function () {
+    let acct1Deposit = 1000
+
+    it('should deploy Staker', async function () {
+      const Staker = await ethers.getContractFactory('Staker')
+      //expires after 5 seconds
+      stakerContract = await Staker.deploy(exampleContract.address, 5, 10000)
+    })
+
+    it('should not all the Staker to be executed', async function () {
+      await expect(stakerContract.execute()).to.be.revertedWith(
+        'Unable to execute yet...',
+      )
+    })
+
+    it('should allow allow addr1 to invest in the project', async function () {
+      const [owner, addr1, ...addrs] = await ethers.getSigners()
+      await (await stakerContract.connect(addr1)).stake({ value: acct1Deposit })
+      expect(await stakerContract.totalRaised()).eq(acct1Deposit)
+      const balance = await (await stakerContract.connect(addr1)).balance()
+      expect(balance).eq(acct1Deposit)
+    })
+
+    it('should allow the contract to be executed after 5 seconds', async function () {
+      await sleep(5)
+      stakerContract.execute()
+    })
+
+    it('should allow a attempted withdrawal', async function () {
+      const [owner, addr1, addr2, addr3, ...addrs] = await ethers.getSigners()
+      await (await stakerContract.connect(addr1)).withdraw()
+      const balance = await (await stakerContract.connect(addr1)).balance()
+      expect(balance).to.eq(0)
+      const contractValue = await provider.getBalance(stakerContract.address)
+      expect(contractValue).to.eq(0)
+    })
+
+    it('should not allow any more staking', async function () {
+      const [owner, addr1, addr2, addr3, ...addrs] = await ethers.getSigners()
+      await expect(
+        (await stakerContract.connect(addr3)).stake({ value: 5 }),
+      ).to.be.revertedWith('Too late to stake')
+    })
+  })
 })
