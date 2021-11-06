@@ -1,3 +1,5 @@
+const { ethers } = require('ethers')
+
 module.exports = async ({ getNamedAccounts, deployments }) => {
   const { deploy } = deployments
   const { deployer } = await getNamedAccounts()
@@ -6,7 +8,11 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   )
   await deploy('Staker', {
     from: deployer,
-    args: [exampleExternalContract.address, 4000, 1e15],
+    args: [
+      exampleExternalContract.address,
+      3600 * 72,
+      ethers.utils.parseEther('0.1'),
+    ],
     log: true,
   })
 }
