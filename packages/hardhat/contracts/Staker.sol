@@ -57,6 +57,9 @@ contract Staker {
   }
 
   function timeLeft() public view returns (uint){
+    if (block.timestamp > deadline) {
+      return 0;
+    }
     return deadline - block.timestamp;
   }
 }
